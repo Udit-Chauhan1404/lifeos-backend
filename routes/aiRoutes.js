@@ -1,0 +1,11 @@
+const router = require("express").Router();
+const ctrl   = require("../controllers/aiController");
+const { protect } = require("../middleware/authMiddleware");
+const { aiLimiter } = require("../middleware/rateLimiter");
+router.use(protect, aiLimiter);
+router.get("/advice",           ctrl.getAdvice);
+router.get("/daily-plan",       ctrl.getDailyPlan);
+router.post("/prioritize-tasks",ctrl.prioritizeTasks);
+router.get("/weekly-report",    ctrl.getWeeklyReport);
+router.post("/chat",            ctrl.chat);
+module.exports = router;

@@ -1,0 +1,10 @@
+const router = require("express").Router();
+const ctrl   = require("../controllers/habitController");
+const { protect } = require("../middleware/authMiddleware");
+router.use(protect);
+router.get("/",            ctrl.getHabits);
+router.post("/",           ctrl.createHabit);
+router.put("/:id",         ctrl.updateHabit);
+router.delete("/:id",      ctrl.deleteHabit);
+router.post("/:id/toggle", ctrl.toggleCompletion);
+module.exports = router;

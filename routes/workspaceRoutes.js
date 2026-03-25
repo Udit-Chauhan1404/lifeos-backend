@@ -1,0 +1,12 @@
+const router = require("express").Router();
+const ctrl   = require("../controllers/workspaceController");
+const { protect } = require("../middleware/authMiddleware");
+router.use(protect);
+router.get("/",    ctrl.getWorkspaces);
+router.post("/",   ctrl.createWorkspace);
+router.put("/:id", ctrl.updateWorkspace);
+router.delete("/:id", ctrl.deleteWorkspace);
+router.post("/:id/invite", ctrl.generateInvite);
+router.post("/join/:code", ctrl.joinByCode);
+router.delete("/:id/members/:userId", ctrl.removeMember);
+module.exports = router;

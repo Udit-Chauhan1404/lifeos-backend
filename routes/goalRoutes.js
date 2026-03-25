@@ -1,0 +1,10 @@
+const router = require("express").Router();
+const ctrl   = require("../controllers/goalController");
+const { protect } = require("../middleware/authMiddleware");
+router.use(protect);
+router.get("/",    ctrl.getGoals);
+router.post("/",   ctrl.createGoal);
+router.put("/:id", ctrl.updateGoal);
+router.delete("/:id", ctrl.deleteGoal);
+router.patch("/:id/milestones/:milestoneId", ctrl.toggleMilestone);
+module.exports = router;
