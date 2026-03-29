@@ -1,33 +1,29 @@
 require("dotenv").config();
-const express        = require("express");
-const cors           = require("cors");
-const helmet         = require("helmet");
-const compression    = require("compression");
-const morgan         = require("morgan");
-const mongoSanitize  = require("express-mongo-sanitize");
-const xssClean       = require("xss-clean");
-const rateLimit      = require("express-rate-limit");
-const errorHandler   = require("./middleware/errorHandler");
-const logger         = require("./utils/logger");
+const express       = require("express");
+const helmet        = require("helmet");
+const compression   = require("compression");
+const morgan        = require("morgan");
+const mongoSanitize = require("express-mongo-sanitize");
+const xssClean      = require("xss-clean");
+const rateLimit     = require("express-rate-limit");
+const errorHandler  = require("./middleware/errorHandler");
+const logger        = require("./utils/logger");
 
 const app = express();
 app.set("trust proxy", 1);
-// Handle CORS preflight for ALL routes
-app.options("*", (req, res) => {
+
+// ── CORS — manual headers (works with all origins) ──────────────────
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization,Accept");
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204);
+  res.setHeader("Access-Control-Max-Age", "86400");
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
 });
 
-app.use(helmet());
-app.use(cors({
-  origin: "*",
-  credentials: false,
-  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type","Authorization"],
-}));
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
 // Stripe webhook needs raw body BEFORE json parser
 app.use("/api/stripe/webhook", express.raw({ type: "application/json" }));
