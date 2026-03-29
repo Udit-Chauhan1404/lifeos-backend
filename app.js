@@ -14,7 +14,18 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(helmet());
 app.use(cors({
-  origin: [process.env.FRONTEND_URL, "http://localhost:5173", "http://localhost:3000"],
+  origin: function(origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    const allowed = [
+      process.env.FRONTEND_URL,
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://life-c5ajzteqf-udit-chauhan1404s-projects.vercel.app",
+    ].filter(Boolean);
+    if (allowed.includes(origin)) return callback(null, true);
+    return callback(null, true); // Allow all origins for now
+  },
   credentials: true,
   methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
   allowedHeaders: ["Content-Type","Authorization"],
