@@ -40,6 +40,14 @@ const PORT = process.env.PORT || 5000;
     logger.info(`🚀 LifeOS API running on port ${PORT} [${process.env.NODE_ENV || "development"}]`);
   });
 
+  if (process.env.NODE_ENV === 'production') {
+  setInterval(() => {
+    fetch(`https://lifeos-backend-jpk9.onrender.com/health`)
+      .then(() => console.log('Self-ping: awake'))
+      .catch(() => {});
+  }, 14 * 60 * 1000);
+}
+
   // Graceful shutdown
   const shutdown = async (sig) => {
     logger.info(`${sig} — shutting down`);
