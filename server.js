@@ -11,17 +11,15 @@ const PORT = process.env.PORT || 5000;
 (async () => {
   // Test DB connection
   try {
-  // Retry connection up to 3 times
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 5; i++) {
     try {
       await prisma.$connect();
       console.log("✅ PostgreSQL connected via Prisma");
       break;
     } catch (err) {
-      console.log(`Connection attempt ${i} failed: ${err.message}`);
-      if (i === 3) throw err;
-      console.log(`Retrying in 3 seconds...`);
-      await new Promise(r => setTimeout(r, 3000));
+      console.log(`Attempt ${i} failed: ${err.message}`);
+      if (i === 5) throw err;
+      await new Promise(r => setTimeout(r, 5000));
     }
   }
 } catch (err) {
